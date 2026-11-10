@@ -220,6 +220,7 @@ const RETRY_CLASS = {
   cancelled: 'fatal',
   // Loop and child failures never reach a retry decision; listed for totality.
   max_iterations: 'unknown',
+  max_reworks: 'unknown',
   child_failed: 'unknown',
 } as const satisfies Record<NodeFailureKind, RetryClass>;
 

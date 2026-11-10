@@ -41,6 +41,7 @@ import { dispatchNode } from './dispatch';
 import { nodePackDir } from '../pack-dir';
 import { runWithPackDir } from '../workflow-variables';
 import { getStaleCachedDependencies } from './stale-dependencies';
+import { applyRework, initialReworkCounts } from './rework';
 /**
  * Await thunks one at a time, collecting outcomes in `Promise.allSettled` shape so the
  * caller's result handling is identical for the sequential and concurrent paths.
@@ -70,17 +71,18 @@ async function settleSequentially(
  */
 export async function runLayers(ctx: RunLayersContext): Promise<void> {
   // nodeOutputs + accumulators + lastSequentialSession are mutated in place on `ctx`.
-
+  const reworksUsed = initialReworkCounts(ctx);
   for (let layerIdx = 0; layerIdx < ctx.layers.length; layerIdx++) {
     if (ctx.containerPause?.publish && ctx.claimedWorkPausePolicy !== 'finish_through_parent_pause')
       break;
     await ctx.toolAttention.refresh();
     const layer = ctx.layers[layerIdx];
     await runLayer(ctx, layer, layerIdx);
-
+    const rewindTo = await applyRework(ctx, layer, reworksUsed);
     await ctx.afterLayer?.();
 
     if (await stopsBetweenLayers(ctx, layerIdx)) break;
+    if (rewindTo !== undefined) layerIdx = rewindTo - 1;
   }
 }
 

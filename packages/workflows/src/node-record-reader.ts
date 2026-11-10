@@ -101,6 +101,7 @@ function lifecycleFor(
     case 'node_skipped':
       return data.reason !== undefined &&
         data.reason !== 'stale_dependency' &&
+        data.reason !== 'rework' &&
         data.cause !== undefined
         ? { status: 'skipped', reason: data.reason, cause: data.cause }
         : undefined;

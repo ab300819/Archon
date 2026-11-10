@@ -89,6 +89,7 @@ export function validateDagStructure(
     firstError(scope, checkResumeAncestry) ??
     firstError(scope, checkFanOutItems) ??
     firstError(scope, checkBindings) ??
+    firstError(scope, checkReworkTarget) ??
     firstError(scope, checkLoopGroupBody)
   );
 }
@@ -245,6 +246,20 @@ function checkResumeAncestry(node: DagNode | IncludeDirective, scope: DagScope):
   }
   if (nodesById.has(sourceId) && !scope.transitiveDepsOf(node.id).has(sourceId)) {
     return `Node '${node.id}' context.resume source '${sourceId}' is not an upstream dependency`;
+  }
+  return null;
+}
+
+/** A rework target must be an agent node transitively upstream in the same scope. */
+function checkReworkTarget(node: DagNode | IncludeDirective, scope: DagScope): string | null {
+  if (isIncludeDirective(node) || !isAgentNode(node) || node.rework === undefined) return null;
+  const targetId = node.rework.to;
+  const target = scope.nodesById.get(targetId);
+  if (target === undefined || !scope.transitiveDepsOf(node.id).has(targetId)) {
+    return `Node '${node.id}' rework.to '${targetId}' is not an upstream dependency in the same scope`;
+  }
+  if (isIncludeDirective(target) || !isAgentNode(target)) {
+    return `Node '${node.id}' rework.to '${targetId}' must be a command or prompt node`;
   }
   return null;
 }

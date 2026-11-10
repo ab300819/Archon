@@ -47,6 +47,8 @@ export interface DagResumeSnapshot extends RunUsageFigures {
   /** Already counted carried loop spend, keyed by invocation id, surviving later gates. */
   loopUsageBaselines?: Map<string, NodeExecutionMetadata['spend']>;
   completedNodeOutputs: Map<string, PersistedNodeOutput>;
+  /** Rework round trips each reviewer path has spent, rebuilt from its own `rework_by` rows. */
+  reworkCounts?: Map<string, number>;
   /** Nodes whose latest record is `node_failed`; a run continued after a pause replays them. */
   failedNodes: Map<string, PriorFailedNode>;
   /** First durable ordered snapshot for each instance-qualified composed fan-out scope. */

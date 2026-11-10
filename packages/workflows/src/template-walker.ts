@@ -46,6 +46,7 @@ export type TemplateSlotName =
   | 'agents.*.prompt'
   | 'agents.*.description'
   | 'agent.prompt'
+  | 'rework.when'
   | 'binding.value'
   | 'binding.from'
   | 'binding.if_skipped'
@@ -91,6 +92,7 @@ export const SLOT_SPEC = {
   'agents.*.prompt': { surface: 'prompt', outputReference: true },
   'agents.*.description': { surface: 'prompt', outputReference: true },
   'agent.prompt': { surface: 'prompt', outputReference: true },
+  'rework.when': { surface: 'condition', outputReference: true },
   'binding.value': { surface: 'value', outputReference: true, valuePosition: 'binding' },
   'binding.from': { surface: 'binding_from', outputReference: true },
   'binding.if_skipped': {
@@ -264,6 +266,9 @@ function walkSharedSlots(node: DagNode, emit: SlotEmitter): void {
 }
 
 function walkAgent(node: AgentNode, emit: SlotEmitter): void {
+  const rework = node.rework;
+  if (rework !== undefined)
+    emit.slot('rework.when', 'rework.when', rework.when, value => (rework.when = value));
   if (node.source.kind === 'inline') {
     const source = node.source;
     emit.slot('agent.prompt', 'prompt', source.prompt, value => (source.prompt = value));

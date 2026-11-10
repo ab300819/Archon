@@ -32,9 +32,25 @@ export type PromptSource = z.infer<typeof promptSourceSchema>;
  * the only divergence between them is where the prompt text comes from, which
  * `source` now expresses directly instead of via which top-level field is set.
  */
+/**
+ * Send work back to an upstream agent node when this node's own result says so.
+ * `when` is evaluated against outputs after this node completes; on a match the
+ * engine re-runs `to` and everything downstream of it, delivering this node's
+ * output to `to` as `$REWORK_FEEDBACK`. `max` bounds the round trips; one more
+ * match fails this node with failureKind `max_reworks`.
+ */
+export const reworkConfigSchema = z.object({
+  to: z.string().min(1),
+  when: z.string().min(1),
+  max: z.number().int().min(1).max(5),
+});
+
+export type ReworkConfig = z.infer<typeof reworkConfigSchema>;
+
 export const agentNodeSchema = dagNodeBaseSchema.extend({
   kind: z.literal('agent'),
   source: promptSourceSchema,
+  rework: reworkConfigSchema.optional(),
 });
 
 /** DAG node that runs an AI prompt — inline, or loaded from a named command file */

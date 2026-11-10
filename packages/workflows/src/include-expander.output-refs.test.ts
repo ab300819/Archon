@@ -49,6 +49,29 @@ describe('expandWorkflowIncludes — shorthand when: refs', () => {
   });
 });
 
+describe('expandWorkflowIncludes — rework', () => {
+  test('namespaces rework.to and the refs in rework.when', () => {
+    const block = wf('reviewed', [
+      { id: 'implement', prompt: 'do it' },
+      {
+        id: 'review',
+        prompt: 'review it',
+        depends_on: ['implement'],
+        rework: { to: 'implement', when: "$review.output == 'reject'", max: 1 },
+      },
+    ]);
+    const parent = wf('parent', [{ id: 'inc', include: 'reviewed' }]);
+    const { workflows, errors } = expandWorkflowIncludes(mapOf(block, parent));
+    expect(errors).toHaveLength(0);
+    const review = nodeById(workflows.get('parent')!, 'inc__review');
+    expect(review?.kind === 'agent' ? review.rework : undefined).toEqual({
+      to: 'inc__implement',
+      when: "$inc__review.output == 'reject'",
+      max: 1,
+    });
+  });
+});
+
 describe('expandWorkflowIncludes — refs in Markdown code spans', () => {
   test('rewrites refs both outside and inside a fenced example', () => {
     const block = wf('blk', [

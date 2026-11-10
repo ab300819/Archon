@@ -128,6 +128,7 @@ interface ResumeFold {
   readonly runId: string;
   readonly completedNodeOutputs: Map<string, PersistedNodeOutput>;
   readonly failedNodes: Map<string, PriorFailedNode>;
+  readonly reworkCounts: Map<string, number>;
   readonly fanOutSnapshots: Map<string, readonly FanOutInstanceSnapshot[]>;
   readonly unresolvedNodeStarts: Set<string>;
   readonly unfinishedInvocations: Map<string, NodeExecutionMetadata>;
@@ -584,6 +585,10 @@ async function foldNodeRow(fold: ResumeFold, row: FoldedRow): Promise<void> {
   foldInvocation(fold, record);
   const data = record.data;
   recordPriorFailure(fold.failedNodes, row.event_type, row.step_name, data);
+  // A rework writes one row per node it sends back; the reviewer's own row counts the trip.
+  if (row.event_type === 'node_prior_cache_invalidated' && data.rework_by === row.step_name) {
+    fold.reworkCounts.set(row.step_name, (fold.reworkCounts.get(row.step_name) ?? 0) + 1);
+  }
   if (
     row.event_type !== 'node_completed' &&
     row.event_type !== 'node_skipped_prior_success' &&
@@ -691,6 +696,7 @@ export async function foldDagResumeSnapshot(
     runId: workflowRunId,
     completedNodeOutputs: new Map(),
     failedNodes: new Map(),
+    reworkCounts: new Map(),
     fanOutSnapshots: new Map(),
     unresolvedNodeStarts: new Set(),
     unfinishedInvocations: new Map(),
@@ -721,6 +727,7 @@ export async function foldDagResumeSnapshot(
     ),
     completedNodeOutputs: fold.completedNodeOutputs,
     failedNodes: fold.failedNodes,
+    reworkCounts: fold.reworkCounts,
     fanOutSnapshots: fold.fanOutSnapshots,
     unresolvedNodeStarts: fold.unresolvedNodeStarts,
     ...countedUsage(fold),

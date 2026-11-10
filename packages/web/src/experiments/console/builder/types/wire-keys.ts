@@ -34,6 +34,7 @@ export const WIRE_KEY_ROLES = {
   denied_tools: 'base',
   idle_timeout: 'base',
   retry: 'base',
+  rework: 'base',
   hooks: 'base',
   mcp: 'base',
   skills: 'base',

@@ -76,6 +76,7 @@ export function loadAgentPrompt(
         inputs: promptInputs,
         ...extras.listings,
         rejectionReason: extras.rejectionReason,
+        reworkFeedback: ctx.reworkFeedback?.get(node.id),
         references: nodeTemplateReferences(rawPrompt, ctx),
       }
     );

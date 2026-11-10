@@ -203,6 +203,10 @@ export interface RunLayersContext extends RunInputs, RunDerived {
   nodeOutputs: Map<string, NodeOutput>;
   /** Prior body outputs available to a loop-group iteration's `when:` conditions. */
   loopPrevOutputs?: ReadonlyMap<string, NodeOutput>;
+  /** Rework round trips already spent per reviewer path in earlier passes of this run. */
+  priorReworks?: ReadonlyMap<string, number>;
+  /** `$REWORK_FEEDBACK` per rework target, set by runLayers when a reviewer sends work back. */
+  reworkFeedback?: Map<string, string>;
   /**
    * Awaited after a complete layer has been aggregated and before lifecycle status is
    * observed. The top-level DAG uses this to durably capture authored run state at

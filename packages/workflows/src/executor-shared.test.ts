@@ -554,6 +554,7 @@ describe('typed provider failures decide retry — #3520', () => {
       exec_failed: 'unknown',
       output_contract: 'unknown',
       max_iterations: 'unknown',
+      max_reworks: 'unknown',
       child_failed: 'unknown',
       cancelled: 'fatal',
       config: 'fatal',

@@ -19,6 +19,8 @@ export interface ExecNodeEnvironmentContext {
   loopUserInput: string;
   loopPrevOutput: string;
   rejectionReason: string;
+  /** Never set: only agent nodes can be rework targets. */
+  reworkFeedback?: string;
   issueContext?: string;
   adoptedRunDir?: string | undefined;
   /**

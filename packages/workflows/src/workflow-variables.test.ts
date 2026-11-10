@@ -41,6 +41,7 @@ describe('user-controlled runtime variable delivery', () => {
             loopUserInput: `feedback${literal}`,
             rejectionReason: `rejection${literal}`,
             loopPrevOutput: `previous${literal}`,
+            reworkFeedback: `rework${literal}`,
             issueContext: `issue${literal}`,
           }
         : { userMessage: '' };
@@ -73,7 +74,7 @@ describe('user-controlled runtime variable delivery', () => {
           values.loopUserInput,
           values.rejectionReason,
           values.loopPrevOutput,
-          { shellSafe }
+          { shellSafe, reworkFeedback: values.reworkFeedback }
         );
 
       for (const group of USER_CONTROLLED_VARIABLES) {
@@ -100,6 +101,7 @@ describe('user-controlled runtime variable delivery', () => {
         LOOP_USER_INPUT: value('feedback'),
         REJECTION_REASON: value('rejection'),
         LOOP_PREV_OUTPUT: value('previous'),
+        REWORK_FEEDBACK: value('rework'),
         CONTEXT: value('issue'),
         EXTERNAL_CONTEXT: value('issue'),
         ISSUE_CONTEXT: value('issue'),

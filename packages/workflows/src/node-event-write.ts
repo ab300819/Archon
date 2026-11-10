@@ -190,6 +190,7 @@ function emitterEventFromRecord(
         record.data.reason === undefined ||
         record.data.reason === 'prior_success' ||
         record.data.reason === 'stale_dependency' ||
+        record.data.reason === 'rework' ||
         record.data.cause === undefined
       )
         return undefined;

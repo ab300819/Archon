@@ -43,6 +43,8 @@ const STRING_FIELD_CLASSIFICATIONS = {
   provider: { kind: 'literal', reason: 'Provider is an integration identifier' },
   context: { kind: 'literal', reason: 'Context string selects a session policy' },
   'context.resume': { kind: 'literal', reason: 'Resume target is a node identifier' },
+  'rework.to': { kind: 'literal', reason: 'Rework target is a node identifier' },
+  'rework.when': { kind: 'template', slots: ['rework.when'] },
   'output_format.*': {
     kind: 'literal',
     reason: 'Output-format values declare a JSON schema rather than runtime template input',

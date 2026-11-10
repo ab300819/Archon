@@ -3,6 +3,7 @@ export interface UserControlledVariableContext {
   loopUserInput?: string;
   rejectionReason?: string;
   loopPrevOutput?: string;
+  reworkFeedback?: string;
   issueContext?: string;
 }
 
@@ -17,6 +18,7 @@ export const USER_CONTROLLED_VARIABLES = [
   { names: ['LOOP_USER_INPUT'], source: 'loopUserInput', kind: 'text' },
   { names: ['REJECTION_REASON'], source: 'rejectionReason', kind: 'text' },
   { names: ['LOOP_PREV_OUTPUT'], source: 'loopPrevOutput', kind: 'text' },
+  { names: ['REWORK_FEEDBACK'], source: 'reworkFeedback', kind: 'text' },
   {
     names: ['CONTEXT', 'EXTERNAL_CONTEXT', 'ISSUE_CONTEXT'],
     source: 'issueContext',

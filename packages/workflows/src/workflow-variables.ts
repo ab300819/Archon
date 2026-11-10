@@ -104,6 +104,8 @@ export interface TemplateReferences {
  * - $LOOP_USER_INPUT - User feedback from interactive loop approval. Only populated on the
  *   first iteration of a resumed interactive loop; empty string on all other iterations.
  * - $REJECTION_REASON - Reviewer feedback from approval node rejection (on_reject prompts only).
+ * - $REWORK_FEEDBACK - The output of a reviewer whose `rework:` sent this node back; empty
+ *   on the first pass.
  * - $LOOP_PREV_OUTPUT - Cleaned output of the previous loop iteration. Empty string on the
  *   first iteration (no prior output exists). Useful for fresh_context loops that need
  *   to reference what the previous pass produced or why it failed.
@@ -143,6 +145,8 @@ export function substituteWorkflowVariables(
     typedArtifactsFile?: string;
     /** The consumer's node-outcome observation path, under the same rule as `typedArtifactsFile`. */
     nodeOutcomesFile?: string;
+    /** `$REWORK_FEEDBACK`: the reviewer output that sent this node back; '' otherwise. */
+    reworkFeedback?: string;
     references?: TemplateReferences;
   }
 ): { prompt: string; contextSubstituted: boolean } {
@@ -235,6 +239,7 @@ export function substituteWorkflowVariables(
       loopUserInput,
       rejectionReason,
       loopPrevOutput,
+      reworkFeedback: options?.reworkFeedback,
       issueContext,
     };
     tokens.push(
@@ -313,6 +318,7 @@ export function buildPromptWithContext(
     typedArtifactsFile?: string;
     nodeOutcomesFile?: string;
     rejectionReason?: string;
+    reworkFeedback?: string;
     references?: TemplateReferences;
   }
 ): string {

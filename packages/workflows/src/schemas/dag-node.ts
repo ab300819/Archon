@@ -36,7 +36,7 @@ import {
   type LoopControl,
 } from './loop';
 import { validateNodeHooks } from './hooks';
-import type { AgentNode } from './agent-node';
+import { type AgentNode, reworkConfigSchema } from './agent-node';
 import { dagNodeBaseSchema, isNodeContextResume, nodeContextResumeSchema } from './dag-node-base';
 import {
   bashExecAuthoringSchema,
@@ -257,6 +257,7 @@ export const dagNodeFlatSchema = dagNodeBaseSchema.extend({
   retry: stepRetryConfigSchema
     .extend({ delay_ms: loopRetryConfigSchema.shape.delay_ms })
     .optional(),
+  rework: reworkConfigSchema.optional(),
   ...z.object(NODE_MODE_SHAPES.command).partial().shape,
   ...z.object(NODE_MODE_SHAPES.prompt).partial().shape,
   ...z.object(NODE_MODE_SHAPES.bash).partial().shape,
@@ -313,6 +314,9 @@ function validateDagNode(data: DagNodeFields, ctx: z.RefinementCtx): void {
   const mode = modes[0];
   if (isNodeContextResume(data.context) && mode !== 'command' && mode !== 'prompt') {
     addIssue(ctx, "'context.resume' is only supported on command and prompt nodes", ['context']);
+  }
+  if (data.rework !== undefined && mode !== 'command' && mode !== 'prompt') {
+    addIssue(ctx, "'rework' is only supported on command and prompt nodes", ['rework']);
   }
   if (mode === undefined) {
     validateModelessNode(data, ctx);
@@ -491,6 +495,7 @@ export const KNOWN_NODE_NESTED_KEYS: ReadonlyMap<string, NestedKeySpec> = new Ma
     },
   ],
   ['retry', { kind: 'object', keys: new Set(Object.keys(stepRetryConfigSchema.shape)) }],
+  ['rework', { kind: 'object', keys: new Set(Object.keys(reworkConfigSchema.shape)) }],
   ['context', { kind: 'object', keys: new Set(Object.keys(nodeContextResumeSchema.shape)) }],
   ['loop', { kind: 'object', keys: new Set(Object.keys(loopNodeConfigSchema.shape)) }],
   ['loop_group', { kind: 'object', keys: new Set(Object.keys(loopGroupShape)) }],

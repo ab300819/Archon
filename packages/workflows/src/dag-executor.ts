@@ -511,6 +511,7 @@ async function createRunContext(
     unfinishedInvocations,
     loopUsageBaselines:
       priorCompletedNodes === undefined ? undefined : resumeSnapshot?.loopUsageBaselines,
+    priorReworks: priorCompletedNodes === undefined ? undefined : resumeSnapshot?.reworkCounts,
     reportedChildUsage: resumeSnapshot?.reportedChildUsage,
     unattributedChildUsagePaths: resumeSnapshot?.unattributedChildUsagePaths,
     runBudget,

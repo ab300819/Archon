@@ -129,6 +129,7 @@ export const nodeFailureKindSchema = z.enum([
   'exec_failed',
   'output_contract',
   'max_iterations',
+  'max_reworks',
   'child_failed',
   'cancelled',
   'config',
@@ -277,6 +278,8 @@ export const nodeCacheRecordSchema = z.object({
       action: z.literal('invalidated'),
       prior: executionOutputSchema,
       invalidatingDeps: z.array(z.string()),
+      /** Path of the reviewer whose `rework:` sent this node back; absent for a stale dependency. */
+      reworkBy: z.string().optional(),
     }),
   ]),
 });

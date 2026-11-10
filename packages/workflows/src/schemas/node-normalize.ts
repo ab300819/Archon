@@ -115,7 +115,7 @@ const NODE_BUILDERS: Record<NodeMode, NodeBuilder> = {
   command: data =>
     ({
       ...executableFields(data),
-      ...definedFields(data, ['retry']),
+      ...definedFields(data, ['retry', 'rework']),
       ...providerFields(data),
       kind: 'agent',
       source: {
@@ -127,7 +127,7 @@ const NODE_BUILDERS: Record<NodeMode, NodeBuilder> = {
   prompt: data =>
     ({
       ...executableFields(data),
-      ...definedFields(data, ['retry']),
+      ...definedFields(data, ['retry', 'rework']),
       ...providerFields(data),
       kind: 'agent',
       source: { kind: 'inline', prompt: selectedField(data.prompt, 'prompt').trim() },

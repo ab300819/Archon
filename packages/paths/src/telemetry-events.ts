@@ -288,6 +288,7 @@ export type WorkflowErrorClass =
   | 'exec_failed'
   | 'output_contract'
   | 'max_iterations'
+  | 'max_reworks'
   | 'child_failed'
   | 'cancelled'
   | 'config';

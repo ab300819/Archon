@@ -53,7 +53,9 @@ export const serializedNodeDataSchema = z.object({
   retryable: z.literal(false).optional(),
   failure_kind: nodeFailureKindSchema.optional(),
   provider_failure: providerFailureSchema.optional(),
-  reason: z.union([nodeSkipReasonSchema, z.literal('stale_dependency')]).optional(),
+  reason: z
+    .union([nodeSkipReasonSchema, z.literal('stale_dependency'), z.literal('rework')])
+    .optional(),
   cause: skipCauseSchema.optional(),
   expr: z.string().optional(),
   suspend_point: z.string().optional(),
@@ -70,6 +72,7 @@ export const serializedNodeDataSchema = z.object({
   prior_output_spill_path: z.string().optional(),
   prior_structured_output: z.unknown().optional(),
   invalidating_deps: z.array(z.string()).optional(),
+  rework_by: z.string().optional(),
   aggregate: z.boolean().optional(),
   iteration: z.number().optional(),
   output_type: z.string().optional(),
@@ -246,8 +249,9 @@ function serializeCacheDecision({ node, cache }: NodeCacheRecord): SerializedNod
         data: {
           node,
           ...priorOutputFields(cache.prior),
-          reason: 'stale_dependency',
+          reason: cache.reworkBy !== undefined ? 'rework' : 'stale_dependency',
           invalidating_deps: cache.invalidatingDeps,
+          ...(cache.reworkBy !== undefined ? { rework_by: cache.reworkBy } : {}),
           ...(cache.prior.structured !== undefined
             ? { prior_structured_output: cache.prior.structured }
             : {}),

@@ -142,6 +142,9 @@ export function rewriteNodeOutputRefs(
     if (isNodeContextResume(target.context)) {
       target.context.resume = renameOutputRef(target.context.resume);
     }
+    if (target.kind === 'agent' && target.rework !== undefined) {
+      target.rework.to = renameOutputRef(target.rework.to);
+    }
     for (const boundary of readComposedMeta(target)?.boundaries ?? []) {
       boundary.dependsOn = boundary.dependsOn.flatMap(expandDependency);
       if (boundary.when !== undefined) boundary.when = whenExpr(boundary.when);
