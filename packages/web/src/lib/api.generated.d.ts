@@ -4818,6 +4818,7 @@ export interface components {
                 | 'exec_failed'
                 | 'output_contract'
                 | 'max_iterations'
+                | 'max_reworks'
                 | 'child_failed'
                 | 'cancelled'
                 | 'config';
@@ -5646,6 +5647,11 @@ export interface components {
       mutates_checkout?: boolean;
       persist_session?: boolean;
       output_type?: string;
+      rework?: {
+        to: string;
+        when: string;
+        max: number;
+      };
       command?: string;
       with?: unknown;
       prompt?: string;
@@ -6367,6 +6373,7 @@ export interface components {
                   | 'exec_failed'
                   | 'output_contract'
                   | 'max_iterations'
+                  | 'max_reworks'
                   | 'child_failed'
                   | 'cancelled'
                   | 'config';
@@ -7284,6 +7291,7 @@ export interface components {
               | 'exec_failed'
               | 'output_contract'
               | 'max_iterations'
+              | 'max_reworks'
               | 'child_failed'
               | 'cancelled'
               | 'config'
